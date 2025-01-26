@@ -230,6 +230,12 @@ void loop() {
           Serial.print("Progress:\t");
           Serial.print(api.printJob.progressCompletion);
           Serial.println(" %");
+          Serial.print("estimatedPrintTime:\t");
+          Serial.print(api.printJob.estimatedPrintTime);
+          Serial.println("");
+          Serial.print("progressPrintTimeLeft:\t");
+          Serial.print(api.printJob.progressPrintTimeLeft); // time left in seconds
+          Serial.println("");
         }
         else if (api.printJob.progressCompletion == 100 && api.printJob.printerState == "Operational")
         {
