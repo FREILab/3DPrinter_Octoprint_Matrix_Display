@@ -226,45 +226,21 @@ void loop() {
     }
     if (api.getPrintJob()) {
     if ((api.printJob.printerState == "Printing")) {
-          //FastLED.clear();
           // we are printing something....
           Serial.print("Progress:\t");
           Serial.print(api.printJob.progressCompletion);
           Serial.println(" %");
-          
-          //int progress = int((NUM_LEDS * int(api.printJob.progressCompletion)) / 100);
-          
-          //Set at least one pixel on when the job starts, as the strip may look 'off' for some time.
-          /*if(progress<1){
-            progress = 1;
-          }*/
-          
-          //fill_solid(leds, progress, CRGB::Green);
-          delay(100);
-          //FastLED.show();
-
-          //printed_timeout_timer = 0;
         }
         else if (api.printJob.progressCompletion == 100 && api.printJob.printerState == "Operational")
         {
           // 100% complete is no longer "Printing" but "Operational"
-          //FastLED.clear();
           Serial.print("Progress:\t");
           Serial.print(api.printJob.progressCompletion);
           Serial.println(" %");
-          
-          //int progress = int(NUM_LEDS); //FULL LEDs
-        
-          //fill_solid(leds, progress, CRGB::Green);
-          delay(100);
-          //FastLED.show();
         }
         else if (api.printJob.printerState == "Offline" || api.printJob.printerState == "Operational")
         {
           // we are without working printer.... or the printer is no longer printing.... lights off
-          //fill_solid(leds, NUM_LEDS, CRGB::Black);
-          delay(100);
-          //FastLED.show();
         }
       }
 
