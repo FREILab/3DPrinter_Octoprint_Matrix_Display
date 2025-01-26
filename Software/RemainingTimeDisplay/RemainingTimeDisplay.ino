@@ -69,35 +69,54 @@ unsigned long api_lasttime = 0;   //last time api request has been done
 
 void setup () {
   Serial.begin(115200);
-  delay(10);
+  delay(3000);      // long pause for serial interface to register
 
-  // We start by connecting to a WiFi network
+  // Start Wifi
   Serial.println();
   Serial.println();
-  Serial.print("Connecting to ");
+  Serial.print("[WiFi] Connecting to ");
   Serial.println(ssid);
-
-  /* Explicitly set the ESP32 to be a WiFi-client, otherwise, it by default,
-     would try to act as both a client and an access-point and could cause
-     network-issues with your other WiFi-devices on your WiFi-network. */
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
+  // Will try for about 10 seconds (20x 500ms)
+  int tryDelay = 500;
+  int numberOfTries = 20;
 
-  //if you get here you have connected to the WiFi
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-  
-  //Use one of these Only if you have not initialized the api object above with parameters"
-  //api.init(client, ip, octoprint_httpPort, octoprint_apikey);               //If using IP address
-  //api.init(client, octoprint_host, octoprint_httpPort, octoprint_apikey);//If using hostname. Comment out one or the other.
-  
+  // Wait for the WiFi event
+  while (true) {
+
+    switch (WiFi.status()) {
+      case WL_NO_SSID_AVAIL: Serial.println("[WiFi] SSID not found"); break;
+      case WL_CONNECT_FAILED:
+        Serial.print("[WiFi] Failed - WiFi not connected! Reason: ");
+        return;
+        break;
+      case WL_CONNECTION_LOST: Serial.println("[WiFi] Connection was lost"); break;
+      case WL_SCAN_COMPLETED:  Serial.println("[WiFi] Scan is completed"); break;
+      case WL_DISCONNECTED:    Serial.println("[WiFi] WiFi is disconnected"); break;
+      case WL_CONNECTED:
+        Serial.println("[WiFi] WiFi is connected!");
+        Serial.print("[WiFi] IP address: ");
+        Serial.println(WiFi.localIP());
+        return;
+        break;
+      default:
+        Serial.print("[WiFi] WiFi Status: ");
+        Serial.println(WiFi.status());
+        break;
+    }
+    delay(tryDelay);
+
+    if (numberOfTries <= 0) {
+      Serial.print("[WiFi] Failed to connect to WiFi!");
+      // Use disconnect function to force stop trying to connect
+      WiFi.disconnect();
+      return;
+    } else {
+      numberOfTries--;
+    }
+  }
 }
 
 
