@@ -18,6 +18,10 @@
 // file for Wifi credentials, octoprint API token and configuration
 #include "secret.h"
 
+// library for RGB LED
+#include <Adafruit_NeoPixel.h>
+
+
 
 // Configure WiFi
 const char* ssid = SECRET_SSID;      // your network SSID (name)
@@ -37,6 +41,17 @@ IPAddress ip(ip_address);
 const int octoprint_httpPort = 80;
 String octoprint_apikey = SECRET_API; //See top of file or GIT Readme about getting API key
 
+// Initialize OctoPrint API
+OctoprintApi api(client, ip, octoprint_httpPort, octoprint_apikey);
+
+unsigned long api_mtbs = 60000; //mean time between api requests (60 seconds)
+unsigned long api_lasttime = 0;   //last time api request has been done
+
+// Setup Neopixel (no of neopizel, Pinnumber, type)
+Adafruit_NeoPixel pixels(1, 4, NEO_GRB + NEO_KHZ800);
+
+
+
 String printerOperational;
 String printerPaused;
 String printerPrinting;
@@ -45,16 +60,6 @@ String printerText;
 String printerHotend;
 String printerTarget;
 String payload;
-
-
-// Initialize OctoPrint API
-OctoprintApi api(client, ip, octoprint_httpPort, octoprint_apikey);
-
-unsigned long api_mtbs = 60000; //mean time between api requests (60 seconds)
-unsigned long api_lasttime = 0;   //last time api request has been done
-
-
-
 
 /* Todos:
   handle no availabe WiFi
@@ -69,6 +74,13 @@ unsigned long api_lasttime = 0;   //last time api request has been done
 
 void setup () {
   Serial.begin(115200);
+
+  pixels.begin();
+  pixels.clear(); // Reset RGB pixels
+  // Set NeoPixel
+  pixels.setPixelColor(0, pixels.Color(20, 20, 0)); // yellow
+  pixels.show();
+
   delay(3000);      // long pause for serial interface to register
 
   // Start Wifi
@@ -87,18 +99,41 @@ void setup () {
   while (true) {
 
     switch (WiFi.status()) {
-      case WL_NO_SSID_AVAIL: Serial.println("[WiFi] SSID not found"); break;
+      case WL_NO_SSID_AVAIL:
+        Serial.println("[WiFi] SSID not found");
+        // Set NeoPixel
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.show();
+        break;
       case WL_CONNECT_FAILED:
         Serial.print("[WiFi] Failed - WiFi not connected! Reason: ");
+        // Set NeoPixel
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.show();
         return;
         break;
-      case WL_CONNECTION_LOST: Serial.println("[WiFi] Connection was lost"); break;
-      case WL_SCAN_COMPLETED:  Serial.println("[WiFi] Scan is completed"); break;
-      case WL_DISCONNECTED:    Serial.println("[WiFi] WiFi is disconnected"); break;
+      case WL_CONNECTION_LOST:
+        // Set NeoPixel
+        Serial.println("[WiFi] Connection was lost");
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.show();
+        break;
+      case WL_SCAN_COMPLETED:
+        Serial.println("[WiFi] Scan is completed");
+        break;
+      case WL_DISCONNECTED:
+        Serial.println("[WiFi] WiFi is disconnected");
+        // Set NeoPixel
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.show();
+        break;
       case WL_CONNECTED:
         Serial.println("[WiFi] WiFi is connected!");
         Serial.print("[WiFi] IP address: ");
         Serial.println(WiFi.localIP());
+        // Set NeoPixel
+        pixels.setPixelColor(0, pixels.Color(0, 20, 0)); // green
+        pixels.show();
         return;
         break;
       default:
@@ -112,6 +147,9 @@ void setup () {
       Serial.print("[WiFi] Failed to connect to WiFi!");
       // Use disconnect function to force stop trying to connect
       WiFi.disconnect();
+      // Set NeoPixel
+      pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+      pixels.show();
       return;
     } else {
       numberOfTries--;
@@ -121,6 +159,29 @@ void setup () {
 
 
 void loop() {
+
+  switch (WiFi.status()) {
+    case WL_DISCONNECTED:
+      Serial.println("[WiFi] WiFi is disconnected");
+      // Set NeoPixel
+      pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+      pixels.show();
+      break;
+    case WL_CONNECTED:
+      // Set NeoPixel
+      pixels.setPixelColor(0, pixels.Color(0, 0, 0)); // off
+      pixels.show();
+      delay(20);
+      pixels.setPixelColor(0, pixels.Color(0, 20, 0)); // green
+      pixels.show();
+      delay(100);
+      return;
+      break;
+    default:
+      Serial.print("[WiFi] WiFi Status: ");
+      Serial.println(WiFi.status());
+      break;
+    }
 
   if (millis() - api_lasttime > api_mtbs || api_lasttime==0) {  //Check if time has expired to go check OctoPrint
     if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
