@@ -31,21 +31,21 @@ WiFiClient client;
 
 // Configure IP adress of octoprint
 const char* ip_address = CONFIG_IP;
-IPAddress ip(ip_address);  
+IPAddress ip(ip_address);
 
 // Setup Octorint Port and API key
-  /* If you are connecting through a router this will work, but you need a
+/* If you are connecting through a router this will work, but you need a
   // random port forwarded to the OctoPrint server from your router.
   // Enter that port here if you are external
   */
 const int octoprint_httpPort = CONFIG_PORT;
-String octoprint_apikey = SECRET_API; //See top of file or GIT Readme about getting API key
+String octoprint_apikey = SECRET_API;  //See top of file or GIT Readme about getting API key
 
 // Initialize OctoPrint API
 OctoprintApi api(client, ip, octoprint_httpPort, octoprint_apikey);
 
-unsigned long api_mtbs = 5000; //mean time between api requests (5 seconds)
-unsigned long api_lasttime = 0;   //last time api request has been done
+unsigned long api_mtbs = 5000;   //mean time between api requests (5 seconds)
+unsigned long api_lasttime = 0;  //last time api request has been done
 
 // Setup Neopixel (no of neopizel, Pinnumber, type)
 Adafruit_NeoPixel pixels(1, 4, NEO_GRB + NEO_KHZ800);
@@ -72,16 +72,16 @@ String payload;
 
 
 
-void setup () {
+void setup() {
   Serial.begin(115200);
 
   pixels.begin();
-  pixels.clear(); // Reset RGB pixels
+  pixels.clear();  // Reset RGB pixels
   // Set NeoPixel
-  pixels.setPixelColor(0, pixels.Color(20, 20, 0)); // yellow
+  pixels.setPixelColor(0, pixels.Color(20, 20, 0));  // yellow
   pixels.show();
 
-  delay(3000);      // long pause for serial interface to register
+  delay(3000);  // long pause for serial interface to register
 
   // Start Wifi
   Serial.println();
@@ -102,20 +102,20 @@ void setup () {
       case WL_NO_SSID_AVAIL:
         Serial.println("[WiFi] SSID not found");
         // Set NeoPixel
-        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0));  // red
         pixels.show();
         break;
       case WL_CONNECT_FAILED:
         Serial.print("[WiFi] Failed - WiFi not connected! Reason: ");
         // Set NeoPixel
-        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0));  // red
         pixels.show();
         return;
         break;
       case WL_CONNECTION_LOST:
         // Set NeoPixel
         Serial.println("[WiFi] Connection was lost");
-        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0));  // red
         pixels.show();
         break;
       case WL_SCAN_COMPLETED:
@@ -124,7 +124,7 @@ void setup () {
       case WL_DISCONNECTED:
         Serial.println("[WiFi] WiFi is disconnected");
         // Set NeoPixel
-        pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+        pixels.setPixelColor(0, pixels.Color(20, 0, 0));  // red
         pixels.show();
         break;
       case WL_CONNECTED:
@@ -132,7 +132,7 @@ void setup () {
         Serial.print("[WiFi] IP address: ");
         Serial.println(WiFi.localIP());
         // Set NeoPixel
-        pixels.setPixelColor(0, pixels.Color(0, 20, 0)); // green
+        pixels.setPixelColor(0, pixels.Color(0, 20, 0));  // green
         pixels.show();
         return;
         break;
@@ -148,7 +148,7 @@ void setup () {
       // Use disconnect function to force stop trying to connect
       WiFi.disconnect();
       // Set NeoPixel
-      pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+      pixels.setPixelColor(0, pixels.Color(20, 0, 0));  // red
       pixels.show();
       return;
     } else {
@@ -164,28 +164,28 @@ void loop() {
     case WL_DISCONNECTED:
       Serial.println("[WiFi] WiFi is disconnected");
       // Set NeoPixel
-      pixels.setPixelColor(0, pixels.Color(20, 0, 0)); // red
+      pixels.setPixelColor(0, pixels.Color(20, 0, 0));  // red
       pixels.show();
       break;
     case WL_CONNECTED:
-      // Set NeoPixel
-      pixels.setPixelColor(0, pixels.Color(0, 0, 0)); // off
-      pixels.show();
-      delay(20);
-      pixels.setPixelColor(0, pixels.Color(0, 20, 0)); // green
-      pixels.show();
-      delay(100);
       // return;
       break;
     default:
       Serial.print("[WiFi] WiFi Status: ");
       Serial.println(WiFi.status());
       break;
-    }
+  }
 
-  if (millis() - api_lasttime > api_mtbs || api_lasttime==0) {  //Check if time has expired to go check OctoPrint
-    if (WiFi.status() == WL_CONNECTED) { //Check WiFi connection status
-      if(api.getOctoprintVersion()){
+  if (millis() - api_lasttime > api_mtbs || api_lasttime == 0) {  //Check if time has expired to go check OctoPrint
+    if (WiFi.status() == WL_CONNECTED) {                          //Check WiFi connection status
+      // Set NeoPixel
+      pixels.setPixelColor(0, pixels.Color(0, 0, 0));  // off
+      pixels.show();
+      delay(20);
+      pixels.setPixelColor(0, pixels.Color(0, 20, 0));  // green
+      pixels.show();
+      delay(100);
+      if (api.getOctoprintVersion()) {
         Serial.println("---------Version---------");
         Serial.print("Octoprint API: ");
         Serial.println(api.octoprintVer.octoprintApi);
@@ -194,7 +194,7 @@ void loop() {
         Serial.println("------------------------");
       }
       Serial.println();
-      if(api.getPrinterStatistics()){
+      if (api.getPrinterStatistics()) {
         Serial.println("---------States---------");
         Serial.print("Printer Current State: ");
         Serial.println(api.printerStats.printerState);
@@ -225,30 +225,26 @@ void loop() {
       }
     }
     if (api.getPrintJob()) {
-    if ((api.printJob.printerState == "Printing")) {
-          // we are printing something....
-          Serial.print("Progress:\t");
-          Serial.print(api.printJob.progressCompletion);
-          Serial.println(" %");
-          Serial.print("estimatedPrintTime:\t");
-          Serial.print(api.printJob.estimatedPrintTime);
-          Serial.println("");
-          Serial.print("progressPrintTimeLeft:\t");
-          Serial.print(api.printJob.progressPrintTimeLeft); // time left in seconds
-          Serial.println("");
-        }
-        else if (api.printJob.progressCompletion == 100 && api.printJob.printerState == "Operational")
-        {
-          // 100% complete is no longer "Printing" but "Operational"
-          Serial.print("Progress:\t");
-          Serial.print(api.printJob.progressCompletion);
-          Serial.println(" %");
-        }
-        else if (api.printJob.printerState == "Offline" || api.printJob.printerState == "Operational")
-        {
-          // we are without working printer.... or the printer is no longer printing.... lights off
-        }
+      if ((api.printJob.printerState == "Printing")) {
+        // we are printing something....
+        Serial.print("Progress:\t");
+        Serial.print(api.printJob.progressCompletion);
+        Serial.println(" %");
+        Serial.print("estimatedPrintTime:\t");
+        Serial.print(api.printJob.estimatedPrintTime);
+        Serial.println("");
+        Serial.print("progressPrintTimeLeft:\t");
+        Serial.print(api.printJob.progressPrintTimeLeft);  // time left in seconds
+        Serial.println("");
+      } else if (api.printJob.progressCompletion == 100 && api.printJob.printerState == "Operational") {
+        // 100% complete is no longer "Printing" but "Operational"
+        Serial.print("Progress:\t");
+        Serial.print(api.printJob.progressCompletion);
+        Serial.println(" %");
+      } else if (api.printJob.printerState == "Offline" || api.printJob.printerState == "Operational") {
+        // we are without working printer.... or the printer is no longer printing.... lights off
       }
+    }
 
     api_lasttime = millis();  //Set api_lasttime to current milliseconds run
   }
