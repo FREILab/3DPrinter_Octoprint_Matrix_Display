@@ -186,59 +186,59 @@ void loop() {
       pixels.show();
       delay(100);
       if (api.getOctoprintVersion()) {
-        Serial.println("---------Version---------");
-        Serial.print("Octoprint API: ");
+        Serial.println("[Octoprint] ---------Version---------");
+        Serial.print("[Octoprint] Octoprint API: ");
         Serial.println(api.octoprintVer.octoprintApi);
-        Serial.print("Octoprint Server: ");
+        Serial.print("[Octoprint] Octoprint Server: ");
         Serial.println(api.octoprintVer.octoprintServer);
         Serial.println("------------------------");
       }
       Serial.println();
       if (api.getPrinterStatistics()) {
-        Serial.println("---------States---------");
-        Serial.print("Printer Current State: ");
+        Serial.println("[Octoprint] ---------States---------");
+        Serial.print("[Octoprint] Printer Current State: ");
         Serial.println(api.printerStats.printerState);
-        Serial.print("Printer State - closedOrError:  ");
+        Serial.print("[Octoprint] Printer State - closedOrError:  ");
         Serial.println(api.printerStats.printerStateclosedOrError);
-        Serial.print("Printer State - error:  ");
+        Serial.print("[Octoprint] Printer State - error:  ");
         Serial.println(api.printerStats.printerStateerror);
-        Serial.print("Printer State - operational:  ");
+        Serial.print("[Octoprint] Printer State - operational:  ");
         Serial.println(api.printerStats.printerStateoperational);
-        Serial.print("Printer State - paused:  ");
+        Serial.print("[Octoprint] Printer State - paused:  ");
         Serial.println(api.printerStats.printerStatepaused);
-        Serial.print("Printer State - printing:  ");
+        Serial.print("[Octoprint] Printer State - printing:  ");
         Serial.println(api.printerStats.printerStatePrinting);
-        Serial.print("Printer State - ready:  ");
+        Serial.print("[Octoprint] Printer State - ready:  ");
         Serial.println(api.printerStats.printerStateready);
-        Serial.print("Printer State - sdReady:  ");
+        Serial.print("[Octoprint] Printer State - sdReady:  ");
         Serial.println(api.printerStats.printerStatesdReady);
-        Serial.println("------------------------");
+        Serial.println("[Octoprint] ------------------------");
         Serial.println();
-        Serial.println("------Termperatures-----");
-        Serial.print("Printer Temp - Tool0 (°C):  ");
+        Serial.println("[Octoprint] ------Termperatures-----");
+        Serial.print("[Octoprint] Printer Temp - Tool0 (°C):  ");
         Serial.println(api.printerStats.printerTool0TempActual);
-        Serial.print("Printer State - Tool1 (°C):  ");
+        Serial.print("[Octoprint] Printer State - Tool1 (°C):  ");
         Serial.println(api.printerStats.printerTool1TempActual);
-        Serial.print("Printer State - Bed (°C):  ");
+        Serial.print("[Octoprint] Printer State - Bed (°C):  ");
         Serial.println(api.printerStats.printerBedTempActual);
-        Serial.println("------------------------");
+        Serial.println("[Octoprint] ------------------------");
       }
     }
     if (api.getPrintJob()) {
       if ((api.printJob.printerState == "Printing")) {
         // we are printing something....
-        Serial.print("Progress:\t");
+        Serial.print("[Octoprint] Progress:\t");
         Serial.print(api.printJob.progressCompletion);
         Serial.println(" %");
-        Serial.print("estimatedPrintTime:\t");
+        Serial.print("[Octoprint] estimatedPrintTime:\t");
         Serial.print(api.printJob.estimatedPrintTime);
-        Serial.println("");
-        Serial.print("progressPrintTimeLeft:\t");
+        Serial.println();
+        Serial.print("[Octoprint] progressPrintTimeLeft:\t");
         Serial.print(api.printJob.progressPrintTimeLeft);  // time left in seconds
-        Serial.println("");
+        Serial.println();
       } else if (api.printJob.progressCompletion == 100 && api.printJob.printerState == "Operational") {
         // 100% complete is no longer "Printing" but "Operational"
-        Serial.print("Progress:\t");
+        Serial.print("[Octoprint] Progress:\t");
         Serial.print(api.printJob.progressCompletion);
         Serial.println(" %");
       } else if (api.printJob.printerState == "Offline" || api.printJob.printerState == "Operational") {
