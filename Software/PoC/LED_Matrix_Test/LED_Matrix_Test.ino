@@ -9,9 +9,13 @@ or "doublebuffer" for animation basics.
 ------------------------------------------------------------------------- */
 
 #include <Wire.h>                 // For I2C communication
-#include <Adafruit_LIS3DH.h>      // For accelerometer
-#include <Adafruit_PixelDust.h>   // For sand simulation
+//#include <Adafruit_LIS3DH.h>      // For accelerometer
+//#include <Adafruit_PixelDust.h>   // For sand simulation
 #include <Adafruit_Protomatter.h> // For RGB matrix
+#include <Fonts/Picopixel.h> // 5px font
+#include <Fonts/TomThumb.h> // 5px font breit
+#include <Fonts/Org_01.h> // 5px font
+#include <Fonts/FreeSans9pt7b.h> // 5px font
 
 #define HEIGHT  32 // Matrix height (pixels) - SET TO 64 FOR 64x64 MATRIX!
 #define WIDTH   64 // Matrix width (pixels)
@@ -38,7 +42,9 @@ Adafruit_Protomatter matrix(
   WIDTH, 4, 1, rgbPins, NUM_ADDR_PINS, addrPins,
   clockPin, latchPin, oePin, true);
 
-
+int16_t  textX;        // Current text position (X)
+int16_t  textY;        // Current text position (Y)
+char     str[64];      // Buffer to text
 
 void setup(void) {
   Serial.begin(9600);
@@ -50,6 +56,8 @@ void setup(void) {
   if(status != PROTOMATTER_OK) {
     for(;;);
   }
+
+  /*
 
   // Make four color bars (red, green, blue, white) with brightness ramp:
   for(int x=0; x<matrix.width(); x++) {
@@ -69,10 +77,81 @@ void setup(void) {
   // AFTER DRAWING, A show() CALL IS REQUIRED TO UPDATE THE MATRIX!
 
   matrix.show(); // Copy data to matrix buffers
+  */
+
 }
 
 void loop(void) {
+  displayPrinterPrinting();
+
+
   Serial.print("Refresh FPS = ~");
   Serial.println(matrix.getFrameCount());
   delay(1000);
+}
+
+
+void displayPrinterPrinting() {
+
+  // Fill background black
+  matrix.fillScreen(0);
+  matrix.setTextWrap(false);           // Allow text off edge
+  // draw border
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(0, 255, 0)); // green
+
+  // Minutes
+  sprintf(str, "32m");
+  textX = 45;
+  textY = 2;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
+  //matrix.setFont(&FreeSans9pt7b);
+  matrix.setTextSize(1);
+  matrix.println(str);
+  // Hours
+  sprintf(str, "14h");
+  textX = 26;
+  textY = 2;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
+  //matrix.setFont(&FreeSans9pt7b);
+  matrix.setTextSize(1);
+  matrix.println(str);
+
+  matrix.show();
+}
+
+
+
+void displayPrinterOffline() {
+
+  /*#include <Fonts/Picopixel.h> // 5px font
+#include <Fonts/TomThumb.h> // 5px font breit
+#include <Fonts/Org_01.h> // 5px font*/
+
+  sprintf(str, "Drucker 1 offline");
+  textX = 0;        // Current text position (X)
+  textY = 8;   
+
+  matrix.fillScreen(0); // Fill background black
+    matrix.setTextWrap(false);           // Allow text off edge
+  matrix.setTextColor(0xFFFF);         // White
+
+  
+
+  // 1
+  matrix.setCursor(0, 8);
+  matrix.setFont(&Picopixel); // Use nice bitmap font
+  matrix.println(str);
+
+  // 2
+  matrix.setCursor(0, 16);
+  matrix.setFont(&TomThumb); // Use nice bitmap font
+  matrix.println(str);
+
+  // 3
+  matrix.setCursor(0, 24);
+  matrix.setFont(&Org_01); // Use nice bitmap font
+  matrix.println(str);
+  matrix.show(); // Copy data to matrix buffers
 }
