@@ -82,8 +82,20 @@ void setup(void) {
 }
 
 void loop(void) {
-  displayPrinterPrinting();
-
+  displayPrinterPrinting(0,1);
+  delay(3000);
+  displayPrinterPrinting(0,12);
+  delay(3000);
+  displayPrinterPrinting(0,120);
+  delay(3000);
+  displayPrinterPrinting(1,0);
+  delay(3000);
+  displayPrinterPrinting(1,12);
+  delay(3000);
+  displayPrinterPrinting(12,23);
+  delay(3000);
+  displayPrinterPrinting(120,23);
+  delay(3000);
 
   Serial.print("Refresh FPS = ~");
   Serial.println(matrix.getFrameCount());
@@ -91,33 +103,94 @@ void loop(void) {
 }
 
 
-void displayPrinterPrinting() {
+// void displayPrinterPrinting(int h_ones, int h_tens, int m_tens, int m_ones) {
+void displayPrinterPrinting(int h, int min) {
+  // necessary variables
+  int h_ones, h_tens, m_tens, m_ones;
+
+  // Extract digits
+  h_tens = h / 10; // Extract tens place
+  h_ones = h % 10; // Extract ones place
+
+  m_tens = min / 10; // Extract tens place
+  m_ones = min % 10; // Extract ones place
+
+  // cap tens places
+  if (h_tens>9) {h_tens = 9;}
+  if (m_tens>6) {m_tens = 5;}
+
 
   // Fill background black
   matrix.fillScreen(0);
-  matrix.setTextWrap(false);           // Allow text off edge
+  matrix.setTextWrap(false);
+  matrix.setTextSize(1);
   // draw border
   matrix.drawRect(0, 0, 64, 32, matrix.color565(0, 255, 0)); // green
 
   // Minutes
-  sprintf(str, "32m");
-  textX = 45;
+
+  // Minutes Text (always)
+  sprintf(str, "m");
+  textX = 57;
   textY = 2;
   matrix.setTextColor(0xFFFF); // white
   matrix.setCursor(textX, textY);
-  //matrix.setFont(&FreeSans9pt7b);
-  matrix.setTextSize(1);
-  matrix.println(str);
-  // Hours
-  sprintf(str, "14h");
-  textX = 26;
-  textY = 2;
-  matrix.setTextColor(0xFFFF); // white
-  matrix.setCursor(textX, textY);
-  //matrix.setFont(&FreeSans9pt7b);
-  matrix.setTextSize(1);
   matrix.println(str);
 
+  // Minutes ones (always)
+  textX = 51;
+  textY = 2;
+  matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+  matrix.setCursor(textX, textY);
+  matrix.println(m_ones);
+
+  // Minutes tens (if h>0 or m_tens>0)
+  if( (h > 0) or (m_tens > 0)) {
+    textX = 45;
+    textY = 2;
+    matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+    matrix.setCursor(textX, textY);
+    matrix.println(m_tens);
+  }
+  
+  // Hours Text (if h>0)
+  if( h > 0 ) {
+    sprintf(str, "h");
+    textX = 38;
+    textY = 2;
+    matrix.setTextColor(0xFFFF); // white
+    matrix.setCursor(textX, textY);
+    matrix.println(str);
+  }
+
+  // Hours ones (if h>0)
+  if( h > 0 ) {
+    textX = 32;
+    textY = 2;
+    matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+    matrix.setCursor(textX, textY);
+    matrix.println(h_ones);
+  }
+
+
+  // Hours tens (if h>9)
+  if( h > 9 ) {
+    textX = 26;
+    textY = 2;
+    matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+    matrix.setCursor(textX, textY);
+    matrix.println(h_tens);
+  }
+
+  // Text time (always)
+  sprintf(str, "Time");
+  textX = 2;
+  textY = 2;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
+  matrix.println(str);
+
+  // Update Display
   matrix.show();
 }
 
