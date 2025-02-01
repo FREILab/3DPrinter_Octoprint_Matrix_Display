@@ -57,54 +57,32 @@ void setup(void) {
     for(;;);
   }
 
-  /*
-
-  // Make four color bars (red, green, blue, white) with brightness ramp:
-  for(int x=0; x<matrix.width(); x++) {
-    uint8_t level = x * 256 / matrix.width(); // 0-255 brightness
-    matrix.drawPixel(x, matrix.height() - 4, matrix.color565(level, 0, 0));
-    matrix.drawPixel(x, matrix.height() - 3, matrix.color565(0, level, 0));
-    matrix.drawPixel(x, matrix.height() - 2, matrix.color565(0, 0, level));
-    matrix.drawPixel(x, matrix.height() - 1, matrix.color565(level, level, level));
-  }
-
-  // Simple shapes and text, showing GFX library calls:
-  matrix.drawCircle(12, 10, 9, matrix.color565(255, 0, 0));               // Red
-  matrix.drawRect(14, 6, 17, 17, matrix.color565(0, 255, 0));             // Green
-  matrix.drawTriangle(32, 9, 41, 27, 23, 27, matrix.color565(0, 0, 255)); // Blue
-  matrix.println("ADAFRUIT"); // Default text color is white
-
-  // AFTER DRAWING, A show() CALL IS REQUIRED TO UPDATE THE MATRIX!
-
-  matrix.show(); // Copy data to matrix buffers
-  */
-
 }
 
 void loop(void) {
-  displayPrinterPrinting(0,1);
+  displayPrinterPrinting(0,1, 0.1);
   delay(3000);
-  displayPrinterPrinting(0,12);
+  displayPrinterPrinting(0,12, 0.2);
   delay(3000);
-  displayPrinterPrinting(0,120);
+  displayPrinterPrinting(0,120, 0.5);
   delay(3000);
-  displayPrinterPrinting(1,0);
+  displayPrinterPrinting(1,0, 0.66);
   delay(3000);
-  displayPrinterPrinting(1,12);
+  displayPrinterPrinting(1,12, 1.0);
   delay(3000);
-  displayPrinterPrinting(12,23);
+  displayPrinterPrinting(12,23, 0.0);
   delay(3000);
-  displayPrinterPrinting(120,23);
+  displayPrinterPrinting(120,23,0.0);
   delay(3000);
 
-  Serial.print("Refresh FPS = ~");
-  Serial.println(matrix.getFrameCount());
+  //Serial.print("Refresh FPS = ~");
+  //Serial.println(matrix.getFrameCount());
   delay(1000);
 }
 
 
 // void displayPrinterPrinting(int h_ones, int h_tens, int m_tens, int m_ones) {
-void displayPrinterPrinting(int h, int min) {
+void displayPrinterPrinting(int h, int min, float progress) {
   // necessary variables
   int h_ones, h_tens, m_tens, m_ones;
 
@@ -127,7 +105,13 @@ void displayPrinterPrinting(int h, int min) {
   // draw border
   matrix.drawRect(0, 0, 64, 32, matrix.color565(0, 255, 0)); // green
 
-  // Minutes
+  // Text time (always)
+  sprintf(str, "Time");
+  textX = 2;
+  textY = 2;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
+  matrix.println(str);
 
   // Minutes Text (always)
   sprintf(str, "m");
@@ -182,13 +166,15 @@ void displayPrinterPrinting(int h, int min) {
     matrix.println(h_tens);
   }
 
-  // Text time (always)
-  sprintf(str, "Time");
-  textX = 2;
-  textY = 2;
-  matrix.setTextColor(0xFFFF); // white
-  matrix.setCursor(textX, textY);
-  matrix.println(str);
+
+  // Draw Progressbar outline
+  matrix.drawRect(2, 10, 60, 6, matrix.color565(128, 128, 128)); // gray
+
+  // draw the bar length depending on the progress
+  for (int i = 3; i<scaleFloatToInteger(progress); i=i+1) {
+    matrix.drawRect(i, 11, 1, 4, matrix.color565(0, 255, 0)); // green
+  }
+
 
   // Update Display
   matrix.show();
@@ -199,8 +185,8 @@ void displayPrinterPrinting(int h, int min) {
 void displayPrinterOffline() {
 
   /*#include <Fonts/Picopixel.h> // 5px font
-#include <Fonts/TomThumb.h> // 5px font breit
-#include <Fonts/Org_01.h> // 5px font*/
+  #include <Fonts/TomThumb.h> // 5px font breit
+  #include <Fonts/Org_01.h> // 5px font*/
 
   sprintf(str, "Drucker 1 offline");
   textX = 0;        // Current text position (X)
@@ -227,4 +213,15 @@ void displayPrinterOffline() {
   matrix.setFont(&Org_01); // Use nice bitmap font
   matrix.println(str);
   matrix.show(); // Copy data to matrix buffers
+}
+
+// Scale a float between 0 to 1 to a int between 3 and 61
+int scaleFloatToInteger(float value) {
+  // Ensure the input value stays within the expected range
+  value = constrain(value, 0.0, 1.0);
+  
+  // Map the float to the integer range [3, 61]
+  int scaledValue = round(value * (61 - 3) + 3);
+  
+  return scaledValue;
 }
