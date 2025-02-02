@@ -64,7 +64,7 @@ void setup(void) {
 
 void loop(void) {
 
-  // update display data every 100 milliseconds
+  // update display data every 100 milliseconds ###############################
   unsigned long currentMillis = millis();
 
   // Check if 100 ms have passed
@@ -78,6 +78,8 @@ void loop(void) {
     } else {
       blink = 0;
     }
+    
+    // Print job is running
     displayPrinterPrinting(56640, 1.0, blink);
   }
 
@@ -198,11 +200,40 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
     matrix.drawRect(i, 11, 1, 4, matrix.color565(0, 255, 0)); // green
   }
 
-  // blink the last line if necesary
+  // blink the last bar if necesary
   if (blink == 1) {
     matrix.drawRect(bar_max_progress-1, 11, 1, 4, matrix.color565(0, 0, 0)); // black
   }
+
+  // Line separating Progress and Temperatures
+  matrix.drawRect(0, 21, 64, 1, matrix.color565(255, 0, 0)); // green
+
   
+  // Display Extruder Temperature Text
+  textX = 2;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setCursor(textX, textY);
+  matrix.println("T:");
+  // Display T0
+  textX = 15;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setCursor(textX, textY);
+  matrix.println("200");
+  // Display Slash
+  textX = 34;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setCursor(textX, textY);
+  matrix.println("|");
+// Display T0
+  textX = 40;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setCursor(textX, textY);
+  matrix.println("80");
+
 
 
   // Update Display
