@@ -8,26 +8,26 @@ PLEASE SEE THE "simple" EXAMPLE FOR AN INTRODUCTORY SKETCH,
 or "doublebuffer" for animation basics.
 ------------------------------------------------------------------------- */
 
-#include <Wire.h>                 // For I2C communication
+#include <Wire.h>  // For I2C communication
 //#include <Adafruit_LIS3DH.h>      // For accelerometer
 //#include <Adafruit_PixelDust.h>   // For sand simulation
-#include <Adafruit_Protomatter.h> // For RGB matrix
-#include <Fonts/Picopixel.h> // 5px font
-#include <Fonts/TomThumb.h> // 5px font breit
-#include <Fonts/Org_01.h> // 5px font
-#include <Fonts/FreeSans9pt7b.h> // 5px font
+#include <Adafruit_Protomatter.h>  // For RGB matrix
+#include <Fonts/Picopixel.h>       // 5px font
+#include <Fonts/TomThumb.h>        // 5px font breit
+#include <Fonts/Org_01.h>          // 5px font
+#include <Fonts/FreeSans9pt7b.h>   // 5px font
 
-#define HEIGHT  32 // Matrix height (pixels) - SET TO 64 FOR 64x64 MATRIX!
-#define WIDTH   64 // Matrix width (pixels)
-#define MAX_FPS 45 // Maximum redraw rate, frames/second
+#define HEIGHT 32   // Matrix height (pixels) - SET TO 64 FOR 64x64 MATRIX!
+#define WIDTH 64    // Matrix width (pixels)
+#define MAX_FPS 45  // Maximum redraw rate, frames/second
 
 
 
-uint8_t rgbPins[]  = {42, 41, 40, 38, 39, 37};
-uint8_t addrPins[] = {45, 36, 48, 35, 21};
-uint8_t clockPin   = 2;
-uint8_t latchPin   = 47;
-uint8_t oePin      = 14;
+uint8_t rgbPins[] = { 42, 41, 40, 38, 39, 37 };
+uint8_t addrPins[] = { 45, 36, 48, 35, 21 };
+uint8_t clockPin = 2;
+uint8_t latchPin = 47;
+uint8_t oePin = 14;
 
 
 #if HEIGHT == 16
@@ -42,12 +42,12 @@ Adafruit_Protomatter matrix(
   WIDTH, 4, 1, rgbPins, NUM_ADDR_PINS, addrPins,
   clockPin, latchPin, oePin, true);
 
-int16_t  textX;        // Current text position (X)
-int16_t  textY;        // Current text position (Y)
-char     str[64];      // Buffer to text
+int16_t textX;  // Current text position (X)
+int16_t textY;  // Current text position (Y)
+char str[64];   // Buffer to text
 
-unsigned long previousMillis = 0;   // Stores the last time the display updated
-const unsigned long interval = 100; // Display data refresh rate in milliseconds
+unsigned long previousMillis = 0;    // Stores the last time the display updated
+const unsigned long interval = 100;  // Display data refresh rate in milliseconds
 
 void setup(void) {
   Serial.begin(9600);
@@ -56,10 +56,10 @@ void setup(void) {
   ProtomatterStatus status = matrix.begin();
   Serial.print("Protomatter begin() status: ");
   Serial.println((int)status);
-  if(status != PROTOMATTER_OK) {
-    for(;;);
+  if (status != PROTOMATTER_OK) {
+    for (;;)
+      ;
   }
-
 }
 
 void loop(void) {
@@ -69,7 +69,7 @@ void loop(void) {
 
   // Check if 100 ms have passed
   if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis; // Update the last run time
+    previousMillis = currentMillis;  // Update the last run time
     // Blink cursorn on odd seconds
     bool blink = 0;
     int run_second = (currentMillis / 1000);
@@ -78,7 +78,7 @@ void loop(void) {
     } else {
       blink = 0;
     }
-    
+
     // Print job is running
     // displayPrinterPrinting(56640, 1.0, blink, 212, 85);
 
@@ -91,9 +91,6 @@ void loop(void) {
     // Wifi is not connected
     //displayWiFiOffline();
   }
-
-  
-
 }
 
 
@@ -105,15 +102,15 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
   int h_ones, h_tens, m_tens, m_ones;
 
   // Extract digits
-  h_tens = h / 10; // Extract tens place
-  h_ones = h % 10; // Extract ones place
+  h_tens = h / 10;  // Extract tens place
+  h_ones = h % 10;  // Extract ones place
 
-  m_tens = min / 10; // Extract tens place
-  m_ones = min % 10; // Extract ones place
+  m_tens = min / 10;  // Extract tens place
+  m_ones = min % 10;  // Extract ones place
 
   // cap tens places
-  if (h_tens>9) {h_tens = 9;}
-  if (m_tens>6) {m_tens = 5;}
+  if (h_tens > 9) { h_tens = 9; }
+  if (m_tens > 6) { m_tens = 5; }
 
 
   // Fill background black
@@ -121,13 +118,13 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
   matrix.setTextWrap(false);
   matrix.setTextSize(1);
   // draw border
-  matrix.drawRect(0, 0, 64, 32, matrix.color565(0, 255, 0)); // green
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(0, 255, 0));  // green
 
   // Text time (always)
   sprintf(str, "Time");
   textX = 2;
   textY = 3;
-  matrix.setTextColor(0xFFFF); // white
+  matrix.setTextColor(0xFFFF);  // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
 
@@ -135,96 +132,96 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
   sprintf(str, "m");
   textX = 57;
   textY = 3;
-  matrix.setTextColor(0xFFFF); // white
+  matrix.setTextColor(0xFFFF);  // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
 
   // Minutes ones (always)
   textX = 51;
   textY = 3;
-  matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+  matrix.setTextColor(matrix.color565(0, 255, 255));  // bright blue
   matrix.setCursor(textX, textY);
   matrix.println(m_ones);
 
   // Minutes tens (if h>0 or m_tens>0)
-  if( (h > 0) or (m_tens > 0)) {
+  if ((h > 0) or (m_tens > 0)) {
     textX = 45;
     textY = 3;
-    matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+    matrix.setTextColor(matrix.color565(0, 255, 255));  // bright blue
     matrix.setCursor(textX, textY);
     matrix.println(m_tens);
   }
-  
+
   // Hours Text (if h>0)
-  if( h > 0 ) {
+  if (h > 0) {
     sprintf(str, "h");
     textX = 38;
     textY = 3;
-    matrix.setTextColor(0xFFFF); // white
+    matrix.setTextColor(0xFFFF);  // white
     matrix.setCursor(textX, textY);
     matrix.println(str);
   }
 
   // Hours ones (if h>0)
-  if( h > 0 ) {
+  if (h > 0) {
     textX = 32;
     textY = 3;
-    matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+    matrix.setTextColor(matrix.color565(0, 255, 255));  // bright blue
     matrix.setCursor(textX, textY);
     matrix.println(h_ones);
   }
 
 
   // Hours tens (if h>9)
-  if( h > 9 ) {
+  if (h > 9) {
     textX = 26;
     textY = 3;
-    matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
+    matrix.setTextColor(matrix.color565(0, 255, 255));  // bright blue
     matrix.setCursor(textX, textY);
     matrix.println(h_tens);
   }
 
 
   // Draw Progressbar outline
-  matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128)); // gray
+  matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128));  // gray
 
   // draw the progress bar length depending on the progress
   int bar_max_progress = scaleFloatToInteger(progress);
-  for (int i = 3; i < bar_max_progress; i=i+1) {
-    matrix.drawRect(i, 13, 1, 4, matrix.color565(0, 255, 0)); // green
+  for (int i = 3; i < bar_max_progress; i = i + 1) {
+    matrix.drawRect(i, 13, 1, 4, matrix.color565(0, 255, 0));  // green
   }
 
   // blink the last bar if necesary
   if (blink == 1) {
-    matrix.drawRect(bar_max_progress-1, 13, 1, 4, matrix.color565(0, 0, 0)); // black
+    matrix.drawRect(bar_max_progress - 1, 13, 1, 4, matrix.color565(0, 0, 0));  // black
   }
 
   // Line separating Progress and Temperatures
-  matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255)); // white
+  matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255));  // white
 
-  
+
   // Display Extruder Temperature Text
   textX = 2;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("T:");
   // Display T0
   textX = 15;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
   // Display Slash
   textX = 34;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("|");
-// Display T1
+  // Display T1
   textX = 40;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
 
@@ -236,52 +233,52 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
 
 
 void displayPrinterReady(int temp_T0, int temp_T1) {
- 
+
   // Fill background black
   matrix.fillScreen(0);
   matrix.setTextWrap(false);
   matrix.setTextSize(1);
   // draw border
-  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 255, 0)); // yellow
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 255, 0));  // yellow
 
   // Text time (always)
   sprintf(str, "Ready");
   textX = 2;
   textY = 3;
-  matrix.setTextColor(0xFFFF); // white
+  matrix.setTextColor(0xFFFF);  // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
 
   // Draw Progressbar outline
-  matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128)); // gray
+  matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128));  // gray
 
 
   // Line separating Progress and Temperatures
-  matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255)); // white
+  matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255));  // white
 
-  
+
   // Display Extruder Temperature Text
   textX = 2;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("T:");
   // Display T0
   textX = 15;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
   // Display Slash
   textX = 34;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("|");
-// Display T1
+  // Display T1
   textX = 40;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
 
@@ -293,25 +290,25 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
 
 
 void displayOctoprintOffline() {
-// Fill background black
+  // Fill background black
   matrix.fillScreen(0);
   matrix.setTextWrap(false);
   matrix.setTextSize(1);
   // draw border
-  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 0, 0)); // red
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 0, 0));  // red
 
   // Text time (always)
   sprintf(str, "Octoprint");
   textX = 2;
   textY = 3;
-  matrix.setTextColor(0xFFFF); // white
+  matrix.setTextColor(0xFFFF);  // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
-  
+
   sprintf(str, "offline");
   textX = 2;
   textY = 14;
-  matrix.setTextColor(0xFFFF); // white
+  matrix.setTextColor(0xFFFF);  // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
 
@@ -321,25 +318,25 @@ void displayOctoprintOffline() {
 
 
 void displayWiFiOffline() {
-// Fill background black
+  // Fill background black
   matrix.fillScreen(0);
   matrix.setTextWrap(false);
   matrix.setTextSize(1);
   // draw border
-  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 0, 0)); // red
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 0, 0));  // red
 
   // Text time (always)
   sprintf(str, "WiFi");
   textX = 2;
   textY = 3;
-  matrix.setTextColor(0xFFFF); // white
+  matrix.setTextColor(0xFFFF);  // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
-  
+
   sprintf(str, "offline");
   textX = 2;
   textY = 14;
-  matrix.setTextColor(0xFFFF); // white
+  matrix.setTextColor(0xFFFF);  // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
 
@@ -351,9 +348,9 @@ void displayWiFiOffline() {
 int scaleFloatToInteger(float value) {
   // Ensure the input value stays within the expected range
   value = constrain(value, 0.0, 1.0);
-  
+
   // Map the float to the integer range [3, 61]
   int scaledValue = round(value * (61 - 3) + 3);
-  
+
   return scaledValue;
 }
