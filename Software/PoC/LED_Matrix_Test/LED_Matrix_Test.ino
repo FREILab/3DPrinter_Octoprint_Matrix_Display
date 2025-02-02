@@ -80,32 +80,17 @@ void loop(void) {
     }
     
     // Print job is running
-    displayPrinterPrinting(56640, 1.0, blink);
+    displayPrinterPrinting(56640, 1.0, blink, 212, 85);
   }
 
   
 
 }
 
-void displayPrinterPrinting(int seconds, float progress, bool blink) {
-  displayPrinterPrinting(seconds / 3600, (seconds % 3600) / 60, progress, blink);
-}
-
 // void displayPrinterPrinting(int h_ones, int h_tens, int m_tens, int m_ones) {
-void displayPrinterPrinting(int h, int min, float progress, bool blink) {
-
-  // Debug:
-  /*
-  Serial.println("[Display] Update Display with following information:");
-  Serial.print("h: ");
-  Serial.print(h);
-  Serial.print(", m: ");
-  Serial.print(min);
-  Serial.print(", progress: ");
-  Serial.print(progress);
-  Serial.print(", blink: ");
-  Serial.println(blink);
-  */
+void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0, int temp_T1) {
+  int h = seconds / 3600;
+  int min = (seconds % 3600) / 60;
 
   // necessary variables
   int h_ones, h_tens, m_tens, m_ones;
@@ -155,7 +140,7 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   // Minutes tens (if h>0 or m_tens>0)
   if( (h > 0) or (m_tens > 0)) {
     textX = 45;
-    textY = 2;
+    textY = 3;
     matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
     matrix.setCursor(textX, textY);
     matrix.println(m_tens);
@@ -220,7 +205,7 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 0, 0)); // red
   matrix.setCursor(textX, textY);
-  matrix.println("200");
+  matrix.println(temp_T0);
   // Display Slash
   textX = 34;
   textY = 23;
@@ -232,7 +217,7 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 0, 0)); // red
   matrix.setCursor(textX, textY);
-  matrix.println("80");
+  matrix.println(temp_T1);
 
 
 
