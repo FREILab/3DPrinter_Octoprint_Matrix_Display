@@ -132,7 +132,7 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   // Text time (always)
   sprintf(str, "Time");
   textX = 2;
-  textY = 2;
+  textY = 3;
   matrix.setTextColor(0xFFFF); // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
@@ -140,14 +140,14 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   // Minutes Text (always)
   sprintf(str, "m");
   textX = 57;
-  textY = 2;
+  textY = 3;
   matrix.setTextColor(0xFFFF); // white
   matrix.setCursor(textX, textY);
   matrix.println(str);
 
   // Minutes ones (always)
   textX = 51;
-  textY = 2;
+  textY = 3;
   matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
   matrix.setCursor(textX, textY);
   matrix.println(m_ones);
@@ -165,7 +165,7 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   if( h > 0 ) {
     sprintf(str, "h");
     textX = 38;
-    textY = 2;
+    textY = 3;
     matrix.setTextColor(0xFFFF); // white
     matrix.setCursor(textX, textY);
     matrix.println(str);
@@ -174,7 +174,7 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   // Hours ones (if h>0)
   if( h > 0 ) {
     textX = 32;
-    textY = 2;
+    textY = 3;
     matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
     matrix.setCursor(textX, textY);
     matrix.println(h_ones);
@@ -184,7 +184,7 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
   // Hours tens (if h>9)
   if( h > 9 ) {
     textX = 26;
-    textY = 2;
+    textY = 3;
     matrix.setTextColor(matrix.color565(0, 255, 255)); // bright blue
     matrix.setCursor(textX, textY);
     matrix.println(h_tens);
@@ -192,21 +192,21 @@ void displayPrinterPrinting(int h, int min, float progress, bool blink) {
 
 
   // Draw Progressbar outline
-  matrix.drawRect(2, 10, 60, 6, matrix.color565(128, 128, 128)); // gray
+  matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128)); // gray
 
   // draw the progress bar length depending on the progress
   int bar_max_progress = scaleFloatToInteger(progress);
   for (int i = 3; i < bar_max_progress; i=i+1) {
-    matrix.drawRect(i, 11, 1, 4, matrix.color565(0, 255, 0)); // green
+    matrix.drawRect(i, 13, 1, 4, matrix.color565(0, 255, 0)); // green
   }
 
   // blink the last bar if necesary
   if (blink == 1) {
-    matrix.drawRect(bar_max_progress-1, 11, 1, 4, matrix.color565(0, 0, 0)); // black
+    matrix.drawRect(bar_max_progress-1, 13, 1, 4, matrix.color565(0, 0, 0)); // black
   }
 
   // Line separating Progress and Temperatures
-  matrix.drawRect(0, 21, 64, 1, matrix.color565(255, 0, 0)); // green
+  matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255)); // white
 
   
   // Display Extruder Temperature Text
