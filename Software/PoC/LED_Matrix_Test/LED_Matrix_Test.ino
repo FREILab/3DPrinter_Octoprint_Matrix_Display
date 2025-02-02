@@ -1,34 +1,19 @@
 /* ----------------------------------------------------------------------
-"Pixel dust" Protomatter library example. As written, this is
-SPECIFICALLY FOR THE ADAFRUIT MATRIXPORTAL with 64x32 pixel matrix.
-Change "HEIGHT" below for 64x64 matrix. Could also be adapted to other
-Protomatter-capable boards with an attached LIS3DH accelerometer.
-
-PLEASE SEE THE "simple" EXAMPLE FOR AN INTRODUCTORY SKETCH,
-or "doublebuffer" for animation basics.
+This is the code to display the desired information on the matrix display
 ------------------------------------------------------------------------- */
 
 #include <Wire.h>  // For I2C communication
-//#include <Adafruit_LIS3DH.h>      // For accelerometer
-//#include <Adafruit_PixelDust.h>   // For sand simulation
 #include <Adafruit_Protomatter.h>  // For RGB matrix
-#include <Fonts/Picopixel.h>       // 5px font
-#include <Fonts/TomThumb.h>        // 5px font breit
-#include <Fonts/Org_01.h>          // 5px font
-#include <Fonts/FreeSans9pt7b.h>   // 5px font
 
 #define HEIGHT 32   // Matrix height (pixels) - SET TO 64 FOR 64x64 MATRIX!
 #define WIDTH 64    // Matrix width (pixels)
 #define MAX_FPS 45  // Maximum redraw rate, frames/second
-
-
 
 uint8_t rgbPins[] = { 42, 41, 40, 38, 39, 37 };
 uint8_t addrPins[] = { 45, 36, 48, 35, 21 };
 uint8_t clockPin = 2;
 uint8_t latchPin = 47;
 uint8_t oePin = 14;
-
 
 #if HEIGHT == 16
 #define NUM_ADDR_PINS 3
@@ -51,20 +36,13 @@ const unsigned long interval = 100;  // Display data refresh rate in millisecond
 
 void setup(void) {
   Serial.begin(9600);
-
-  // Initialize matrix...
   ProtomatterStatus status = matrix.begin();
   Serial.print("Protomatter begin() status: ");
   Serial.println((int)status);
-  if (status != PROTOMATTER_OK) {
-    for (;;)
-      ;
-  }
 }
 
 void loop(void) {
-
-  // update display data every 100 milliseconds ###############################
+  // update display data every 100 milliseconds
   unsigned long currentMillis = millis();
 
   // Check if 100 ms have passed
@@ -93,7 +71,6 @@ void loop(void) {
   }
 }
 
-
 void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0, int temp_T1) {
   int h = seconds / 3600;
   int min = (seconds % 3600) / 60;
@@ -111,7 +88,6 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
   // cap tens places
   if (h_tens > 9) { h_tens = 9; }
   if (m_tens > 6) { m_tens = 5; }
-
 
   // Fill background black
   matrix.fillScreen(0);
@@ -171,7 +147,6 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
     matrix.println(h_ones);
   }
 
-
   // Hours tens (if h>9)
   if (h > 9) {
     textX = 26;
@@ -180,7 +155,6 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
     matrix.setCursor(textX, textY);
     matrix.println(h_tens);
   }
-
 
   // Draw Progressbar outline
   matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128));  // gray
@@ -199,25 +173,27 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
   // Line separating Progress and Temperatures
   matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255));  // white
 
-
   // Display Extruder Temperature Text
   textX = 2;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("T:");
+
   // Display T0
   textX = 15;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 0, 0));  // red
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
-  // Display Slash
+
+  // Display Dash
   textX = 34;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("|");
+
   // Display T1
   textX = 40;
   textY = 23;
@@ -225,12 +201,9 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
 
-
-
   // Update Display
   matrix.show();
 }
-
 
 void displayPrinterReady(int temp_T0, int temp_T1) {
 
@@ -238,6 +211,7 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   matrix.fillScreen(0);
   matrix.setTextWrap(false);
   matrix.setTextSize(1);
+
   // draw border
   matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 255, 0));  // yellow
 
@@ -252,10 +226,8 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   // Draw Progressbar outline
   matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128));  // gray
 
-
   // Line separating Progress and Temperatures
   matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255));  // white
-
 
   // Display Extruder Temperature Text
   textX = 2;
@@ -263,18 +235,21 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("T:");
+
   // Display T0
   textX = 15;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 0, 0));  // red
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
+
   // Display Slash
   textX = 34;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("|");
+
   // Display T1
   textX = 40;
   textY = 23;
@@ -282,12 +257,9 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
 
-
-
   // Update Display
   matrix.show();
 }
-
 
 void displayOctoprintOffline() {
   // Fill background black
@@ -315,7 +287,6 @@ void displayOctoprintOffline() {
   // Update Display
   matrix.show();
 }
-
 
 void displayWiFiOffline() {
   // Fill background black
