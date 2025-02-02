@@ -60,19 +60,26 @@ void setup(void) {
 }
 
 void loop(void) {
-  displayPrinterPrinting(0,1, 0.1);
+  
+  displayPrinterPrinting(60, 0.1);
   delay(3000);
-  displayPrinterPrinting(0,12, 0.2);
+  
+  displayPrinterPrinting(720, 0.2);
   delay(3000);
-  displayPrinterPrinting(0,120, 0.5);
+  
+  displayPrinterPrinting(7200, 0.5);
   delay(3000);
-  displayPrinterPrinting(1,0, 0.66);
+  
+  displayPrinterPrinting(3600, 0.66);
   delay(3000);
-  displayPrinterPrinting(1,12, 1.0);
+  
+  displayPrinterPrinting(4320, 1.0);
   delay(3000);
-  displayPrinterPrinting(12,23, 0.0);
+  
+  displayPrinterPrinting(44580, 0.0);
   delay(3000);
-  displayPrinterPrinting(120,23,0.0);
+  
+  displayPrinterPrinting(433380, 0.0);
   delay(3000);
 
   //Serial.print("Refresh FPS = ~");
@@ -80,6 +87,9 @@ void loop(void) {
   delay(1000);
 }
 
+void displayPrinterPrinting(int seconds, float progress) {
+  displayPrinterPrinting(seconds / 3600, (seconds % 3600) / 60, progress);
+}
 
 // void displayPrinterPrinting(int h_ones, int h_tens, int m_tens, int m_ones) {
 void displayPrinterPrinting(int h, int min, float progress) {
