@@ -80,14 +80,23 @@ void loop(void) {
     }
     
     // Print job is running
-    displayPrinterPrinting(56640, 1.0, blink, 212, 85);
+    // displayPrinterPrinting(56640, 1.0, blink, 212, 85);
+
+    // Printer is ready
+    displayPrinterReady(212, 85);
+
+    // Octoprint is not connected
+    //displayOctoprintOffline();
+
+    // Wifi is not connected
+    //displayWiFiOffline();
   }
 
   
 
 }
 
-// void displayPrinterPrinting(int h_ones, int h_tens, int m_tens, int m_ones) {
+
 void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0, int temp_T1) {
   int h = seconds / 3600;
   int min = (seconds % 3600) / 60;
@@ -212,7 +221,7 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
   matrix.setTextColor(matrix.color565(255, 255, 255)); // white
   matrix.setCursor(textX, textY);
   matrix.println("|");
-// Display T0
+// Display T1
   textX = 40;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 0, 0)); // red
@@ -226,38 +235,116 @@ void displayPrinterPrinting(int seconds, float progress, bool blink, int temp_T0
 }
 
 
+void displayPrinterReady(int temp_T0, int temp_T1) {
+ 
+  // Fill background black
+  matrix.fillScreen(0);
+  matrix.setTextWrap(false);
+  matrix.setTextSize(1);
+  // draw border
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 255, 0)); // yellow
 
-void displayPrinterOffline() {
+  // Text time (always)
+  sprintf(str, "Ready");
+  textX = 2;
+  textY = 3;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
+  matrix.println(str);
 
-  /*#include <Fonts/Picopixel.h> // 5px font
-  #include <Fonts/TomThumb.h> // 5px font breit
-  #include <Fonts/Org_01.h> // 5px font*/
+  // Draw Progressbar outline
+  matrix.drawRect(2, 12, 60, 6, matrix.color565(128, 128, 128)); // gray
 
-  sprintf(str, "Drucker 1 offline");
-  textX = 0;        // Current text position (X)
-  textY = 8;   
 
-  matrix.fillScreen(0); // Fill background black
-    matrix.setTextWrap(false);           // Allow text off edge
-  matrix.setTextColor(0xFFFF);         // White
+  // Line separating Progress and Temperatures
+  matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255)); // white
 
   
+  // Display Extruder Temperature Text
+  textX = 2;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setCursor(textX, textY);
+  matrix.println("T:");
+  // Display T0
+  textX = 15;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setCursor(textX, textY);
+  matrix.println(temp_T0);
+  // Display Slash
+  textX = 34;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255)); // white
+  matrix.setCursor(textX, textY);
+  matrix.println("|");
+// Display T1
+  textX = 40;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 0, 0)); // red
+  matrix.setCursor(textX, textY);
+  matrix.println(temp_T1);
 
-  // 1
-  matrix.setCursor(0, 8);
-  matrix.setFont(&Picopixel); // Use nice bitmap font
+
+
+  // Update Display
+  matrix.show();
+}
+
+
+void displayOctoprintOffline() {
+// Fill background black
+  matrix.fillScreen(0);
+  matrix.setTextWrap(false);
+  matrix.setTextSize(1);
+  // draw border
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 0, 0)); // red
+
+  // Text time (always)
+  sprintf(str, "Octoprint");
+  textX = 2;
+  textY = 3;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
+  matrix.println(str);
+  
+  sprintf(str, "offline");
+  textX = 2;
+  textY = 14;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
   matrix.println(str);
 
-  // 2
-  matrix.setCursor(0, 16);
-  matrix.setFont(&TomThumb); // Use nice bitmap font
+  // Update Display
+  matrix.show();
+}
+
+
+void displayWiFiOffline() {
+// Fill background black
+  matrix.fillScreen(0);
+  matrix.setTextWrap(false);
+  matrix.setTextSize(1);
+  // draw border
+  matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 0, 0)); // red
+
+  // Text time (always)
+  sprintf(str, "WiFi");
+  textX = 2;
+  textY = 3;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
+  matrix.println(str);
+  
+  sprintf(str, "offline");
+  textX = 2;
+  textY = 14;
+  matrix.setTextColor(0xFFFF); // white
+  matrix.setCursor(textX, textY);
   matrix.println(str);
 
-  // 3
-  matrix.setCursor(0, 24);
-  matrix.setFont(&Org_01); // Use nice bitmap font
-  matrix.println(str);
-  matrix.show(); // Copy data to matrix buffers
+  // Update Display
+  matrix.show();
 }
 
 // Scale a float between 0 to 1 to a int between 3 and 61
