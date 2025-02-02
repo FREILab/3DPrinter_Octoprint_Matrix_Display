@@ -46,6 +46,9 @@ int16_t  textX;        // Current text position (X)
 int16_t  textY;        // Current text position (Y)
 char     str[64];      // Buffer to text
 
+unsigned long previousMillis = 0;   // Stores the last time the display updated
+const unsigned long interval = 100; // Display data refresh rate in milliseconds
+
 void setup(void) {
   Serial.begin(9600);
 
@@ -60,39 +63,48 @@ void setup(void) {
 }
 
 void loop(void) {
-  
-  displayPrinterPrinting(60, 0.1);
-  delay(3000);
-  
-  displayPrinterPrinting(720, 0.2);
-  delay(3000);
-  
-  displayPrinterPrinting(7200, 0.5);
-  delay(3000);
-  
-  displayPrinterPrinting(3600, 0.66);
-  delay(3000);
-  
-  displayPrinterPrinting(4320, 1.0);
-  delay(3000);
-  
-  displayPrinterPrinting(44580, 0.0);
-  delay(3000);
-  
-  displayPrinterPrinting(433380, 0.0);
-  delay(3000);
 
-  //Serial.print("Refresh FPS = ~");
-  //Serial.println(matrix.getFrameCount());
-  delay(1000);
+  // update display data every 100 milliseconds
+  unsigned long currentMillis = millis();
+
+  // Check if 100 ms have passed
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis; // Update the last run time
+    // Blink cursorn on odd seconds
+    bool blink = 0;
+    int run_second = (currentMillis / 1000);
+    if (run_second % 2 == 1) {
+      blink = 1;
+    } else {
+      blink = 0;
+    }
+    displayPrinterPrinting(56640, 1.0, blink);
+  }
+
+  
+
 }
 
-void displayPrinterPrinting(int seconds, float progress) {
-  displayPrinterPrinting(seconds / 3600, (seconds % 3600) / 60, progress);
+void displayPrinterPrinting(int seconds, float progress, bool blink) {
+  displayPrinterPrinting(seconds / 3600, (seconds % 3600) / 60, progress, blink);
 }
 
 // void displayPrinterPrinting(int h_ones, int h_tens, int m_tens, int m_ones) {
-void displayPrinterPrinting(int h, int min, float progress) {
+void displayPrinterPrinting(int h, int min, float progress, bool blink) {
+
+  // Debug:
+  /*
+  Serial.println("[Display] Update Display with following information:");
+  Serial.print("h: ");
+  Serial.print(h);
+  Serial.print(", m: ");
+  Serial.print(min);
+  Serial.print(", progress: ");
+  Serial.print(progress);
+  Serial.print(", blink: ");
+  Serial.println(blink);
+  */
+
   // necessary variables
   int h_ones, h_tens, m_tens, m_ones;
 
@@ -180,10 +192,17 @@ void displayPrinterPrinting(int h, int min, float progress) {
   // Draw Progressbar outline
   matrix.drawRect(2, 10, 60, 6, matrix.color565(128, 128, 128)); // gray
 
-  // draw the bar length depending on the progress
-  for (int i = 3; i<scaleFloatToInteger(progress); i=i+1) {
+  // draw the progress bar length depending on the progress
+  int bar_max_progress = scaleFloatToInteger(progress);
+  for (int i = 3; i < bar_max_progress; i=i+1) {
     matrix.drawRect(i, 11, 1, 4, matrix.color565(0, 255, 0)); // green
   }
+
+  // blink the last line if necesary
+  if (blink == 1) {
+    matrix.drawRect(bar_max_progress-1, 11, 1, 4, matrix.color565(0, 0, 0)); // black
+  }
+  
 
 
   // Update Display
