@@ -2,7 +2,6 @@
 This is the code to display the desired information on the matrix display
 ------------------------------------------------------------------------- */
 
-#include <Wire.h>  // For I2C communication
 #include <Adafruit_Protomatter.h>  // For RGB matrix
 
 #define HEIGHT 32   // Matrix height (pixels) - SET TO 64 FOR 64x64 MATRIX!
