@@ -89,6 +89,7 @@ void loop() {
 
       // get latest Octoprint data
       api.getPrinterStatistics();
+      api.getPrintJob();
 
       // State: printer ready (operational + ready)
       if(api.printerStats.printerStateoperational && api.printerStats.printerStateready) {
@@ -98,9 +99,12 @@ void loop() {
       // State printer printing (operational + printing)
       if(api.printerStats.printerStateoperational && api.printerStats.printerStatePrinting) {
         // Printer is printing
+        float progress = (float)api.printJob.progressPrintTime /
+            ((float)api.printJob.progressPrintTime + (float)api.printJob.progressPrintTimeLeft);
+            
         displayPrinterPrinting(
-          123,
-          0.5,
+          api.printJob.progressPrintTimeLeft,
+          progress,
           api.printerStats.printerTool0TempActual,
           api.printerStats.printerBedTempActual);
       }
@@ -330,6 +334,7 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   }
 
   if (blink == 1) {
+    if (bar_max_progress == 3) {bar_max_progress = 4;}
     matrix.drawRect(bar_max_progress - 1, 13, 1, 4, matrix.color565(0, 0, 0));  // black
   }
 
