@@ -93,60 +93,47 @@ void loop() {
     } else {
       Serial.println("[WiFi] Wi-Fi connected. IP address: " + WiFi.localIP().toString());
 
-      // Check if Octoprint is ready
       if (api.getOctoprintVersion()) {
-        Serial.println("[Octoprint] Octoprint connected)");
-
-        /*
-        ---------States---------
-Printer Current State: 
-Printer State - closedOrError:  0
-Printer State - error:  0
-Printer State - operational:  0
-Printer State - paused:  0
-Printer State - printing:  0
-Printer State - ready:  0
-Printer State - sdReady:  0
-------------------------
-
-------Termperatures-----
-Printer Temp - Tool0 (°C):  0.00
-Printer State - Tool1 (°C):  0.00
-Printer State - Bed (°C):  0.00
-        */
-
-        displayPrinterReady(212, 85);
-        if (api.getPrintJob()) {
-          if ((api.printJob.printerState == "Printing")) {
-            // we are printing something....
-            Serial.print("[Octoprint] Progress:\t");
-            Serial.print(api.printJob.progressCompletion);
-            Serial.println(" %");
-            Serial.print("[Octoprint] estimatedPrintTime:\t");
-            Serial.print(api.printJob.estimatedPrintTime);
-            Serial.println();
-            Serial.print("[Octoprint] progressPrintTimeLeft:\t");
-            Serial.print(api.printJob.progressPrintTimeLeft);  // time left in seconds
-            Serial.println();
-          } else if (api.printJob.progressCompletion == 100 && api.printJob.printerState == "Operational") {
-            // 100% complete is no longer "Printing" but "Operational"
-            Serial.print("[Octoprint] Progress:\t");
-            Serial.print(api.printJob.progressCompletion);
-            Serial.println(" %");
-          } else if (api.printJob.printerState == "Offline" || api.printJob.printerState == "Operational") {
-            // we are without working printer.... or the printer is no longer printing.... lights off
-          }}
-
-
-
-        } else {
-          Serial.println("[Octoprint] Octoprint not connected");
-
-          displayOctoprintOffline();
-        }
+        Serial.println("---------Version---------");
+        Serial.print("Octoprint API: ");
+        Serial.println(api.octoprintVer.octoprintApi);
+        Serial.print("Octoprint Server: ");
+        Serial.println(api.octoprintVer.octoprintServer);
+        Serial.println("------------------------");
+      }
+      Serial.println();
+      if (api.getPrinterStatistics()) {
+        Serial.println("---------States---------");
+        Serial.print("Printer Current State: ");
+        Serial.println(api.printerStats.printerState);
+        Serial.print("Printer State - closedOrError:  ");
+        Serial.println(api.printerStats.printerStateclosedOrError);
+        Serial.print("Printer State - error:  ");
+        Serial.println(api.printerStats.printerStateerror);
+        Serial.print("Printer State - operational:  ");
+        Serial.println(api.printerStats.printerStateoperational);
+        Serial.print("Printer State - paused:  ");
+        Serial.println(api.printerStats.printerStatepaused);
+        Serial.print("Printer State - printing:  ");
+        Serial.println(api.printerStats.printerStatePrinting);
+        Serial.print("Printer State - ready:  ");
+        Serial.println(api.printerStats.printerStateready);
+        Serial.print("Printer State - sdReady:  ");
+        Serial.println(api.printerStats.printerStatesdReady);
+        Serial.println("------------------------");
+        Serial.println();
+        Serial.println("------Termperatures-----");
+        Serial.print("Printer Temp - Tool0 (°C):  ");
+        Serial.println(api.printerStats.printerTool0TempActual);
+        Serial.print("Printer State - Tool1 (°C):  ");
+        Serial.println(api.printerStats.printerTool1TempActual);
+        Serial.print("Printer State - Bed (°C):  ");
+        Serial.println(api.printerStats.printerBedTempActual);
+        Serial.println("------------------------");
       }
     }
   }
+}
 
   void connectToWiFi() {
     Serial.println("[WiFi] Connecting to Wi-Fi...");
