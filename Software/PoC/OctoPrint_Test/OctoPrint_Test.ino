@@ -18,6 +18,7 @@
 
 #include <WiFi.h>
 #include <WiFiClient.h>
+#include "secret.h"
 
 const char* ssid = "SSID";          // your network SSID (name)
 const char* password = "PASSWORD";  // your network password
@@ -25,12 +26,12 @@ const char* password = "PASSWORD";  // your network password
 WiFiClient client;
 
 
-// You only need to set one of the of follwowing:
-IPAddress ip(192, 168, 123, 123);                         // Your IP address of your OctoPrint server (inernal or external)
-// char* octoprint_host = "octoprint.example.com";  // Or your hostname. Comment out one or the other.
-
-const int octoprint_httpPort = 80;  //If you are connecting through a router this will work, but you need a random port forwarded to the OctoPrint server from your router. Enter that port here if you are external
-String octoprint_apikey = "API_KEY"; //See top of file or GIT Readme about getting API key
+// Setup Octoprint
+//WiFiClient client;
+const char* ip_address = CONFIG_IP;
+IPAddress ip(ip_address);
+const int octoprint_httpPort = CONFIG_PORT;
+String octoprint_apikey = SECRET_API;  //See top of file or GIT Readme about getting API key
 
 String printerOperational;
 String printerPaused;
@@ -63,7 +64,7 @@ void setup () {
      would try to act as both a client and an access-point and could cause
      network-issues with your other WiFi-devices on your WiFi-network. */
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin(SECRET_SSID, SECRET_PASS);
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
