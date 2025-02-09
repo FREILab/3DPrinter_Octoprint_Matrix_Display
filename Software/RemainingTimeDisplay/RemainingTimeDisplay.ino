@@ -54,6 +54,9 @@ String octoprint_apikey = SECRET_API;  //See top of file or GIT Readme about get
 OctoprintApi api(client, ip, octoprint_httpPort, octoprint_apikey);
 
 
+const int tempGood_T0 = 50; // below this temperature T0 is considered cool
+const int tempGood_T1 = 50; // below this temperature T1 is considered cool
+
 void setup() {
   // Start Serial Interface
   Serial.begin(115200);
@@ -280,7 +283,13 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   // Display T0
   textX = 15;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  if (temp_T0 >= tempGood_T0) {
+    // hot
+    matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  } else {
+    // cool
+    matrix.setTextColor(matrix.color565(0, 255, 0));  // green
+  }
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
 
@@ -294,7 +303,13 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   // Display T1
   textX = 40;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  if (temp_T1 >= tempGood_T1) {
+    // hot
+    matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  } else {
+    // cool
+    matrix.setTextColor(matrix.color565(0, 255, 0));  // green
+  }
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
 
@@ -336,7 +351,13 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   // Display T0
   textX = 15;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  if (temp_T0 >= tempGood_T0) {
+    // hot
+    matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  } else {
+    // cool
+    matrix.setTextColor(matrix.color565(0, 255, 0));  // green
+  }
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
 
@@ -350,7 +371,13 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   // Display T1
   textX = 40;
   textY = 23;
-  matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  if (temp_T1 >= tempGood_T1) {
+    // hot
+    matrix.setTextColor(matrix.color565(255, 0, 0));  // red
+  } else {
+    // cool
+    matrix.setTextColor(matrix.color565(0, 255, 0));  // green
+  }
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
 
