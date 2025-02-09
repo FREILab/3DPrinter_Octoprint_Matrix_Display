@@ -93,9 +93,6 @@ void loop() {
       // Check on Octoprint
       if (api.getPrinterStatistics()) {
         Serial.println("[OctoPrint] Octoprint active");
-        // get latest Octoprint data
-        api.getPrinterStatistics();
-        api.getPrintJob();
 
         // State: printer ready (operational + ready)
         if (api.printerStats.printerStateoperational && api.printerStats.printerStateready) {
@@ -105,6 +102,8 @@ void loop() {
         // State printer printing (operational + printing)
         if (api.printerStats.printerStateoperational && api.printerStats.printerStatePrinting) {
           // Printer is printing
+          // get job status
+          api.getPrintJob();
           float progress = (float)api.printJob.progressPrintTime / ((float)api.printJob.progressPrintTime + (float)api.printJob.progressPrintTimeLeft);
 
           displayPrinterPrinting(
