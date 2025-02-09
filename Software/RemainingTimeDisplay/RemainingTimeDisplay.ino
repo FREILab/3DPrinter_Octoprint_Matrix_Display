@@ -83,30 +83,37 @@ void loop() {
       Serial.println("[WiFi] Wi-Fi lost. Reconnecting...");
       reconnectWiFi();
     } else {
-      Serial.println("[WiFi] Wi-Fi connected. IP address: " + WiFi.localIP().toString());
+      Serial.println("[WiFi] Wi-Fi active");
 
       // printOctoprintDebug();
 
-      // get latest Octoprint data
-      api.getPrinterStatistics();
-      api.getPrintJob();
+      // Check on Octoprint
+      if (api.getPrinterStatistics()) {
+        Serial.println("[OctoPrint] Octoprint active");
+        // get latest Octoprint data
+        api.getPrinterStatistics();
+        api.getPrintJob();
 
-      // State: printer ready (operational + ready)
-      if(api.printerStats.printerStateoperational && api.printerStats.printerStateready) {
-        // Printer is ready
-        displayPrinterReady(api.printerStats.printerTool0TempActual, api.printerStats.printerBedTempActual);
-      }
-      // State printer printing (operational + printing)
-      if(api.printerStats.printerStateoperational && api.printerStats.printerStatePrinting) {
-        // Printer is printing
-        float progress = (float)api.printJob.progressPrintTime /
-            ((float)api.printJob.progressPrintTime + (float)api.printJob.progressPrintTimeLeft);
-            
-        displayPrinterPrinting(
-          api.printJob.progressPrintTimeLeft,
-          progress,
-          api.printerStats.printerTool0TempActual,
-          api.printerStats.printerBedTempActual);
+        // State: printer ready (operational + ready)
+        if (api.printerStats.printerStateoperational && api.printerStats.printerStateready) {
+          // Printer is ready
+          displayPrinterReady(api.printerStats.printerTool0TempActual, api.printerStats.printerBedTempActual);
+        }
+        // State printer printing (operational + printing)
+        if (api.printerStats.printerStateoperational && api.printerStats.printerStatePrinting) {
+          // Printer is printing
+          float progress = (float)api.printJob.progressPrintTime / ((float)api.printJob.progressPrintTime + (float)api.printJob.progressPrintTimeLeft);
+
+          displayPrinterPrinting(
+            api.printJob.progressPrintTimeLeft,
+            progress,
+            api.printerStats.printerTool0TempActual,
+            api.printerStats.printerBedTempActual);
+        }
+
+      } else {
+        Serial.println("[OctoPrint] Octoprint offline");
+        displayWiFiOffline();
       }
     }
   }
@@ -142,7 +149,7 @@ api.printerStats.printerStatePrinting
 17:11:56.182 -> ------------------------
 */
 
-  /* Printer USB disconnected: 
+/* Printer USB disconnected: 
 17:11:55.919 -> ---------Version---------
 17:11:55.919 -> Octoprint API: 0.1
 17:11:55.919 -> Octoprint Server: 1.10.3
@@ -166,7 +173,7 @@ api.printerStats.printerStatePrinting
 17:17:20.182 -> ------------------------
 */
 
-  /* Printer printing: 
+/* Printer printing: 
 17:11:55.919 -> ---------Version---------
 17:11:55.919 -> Octoprint API: 0.1
 17:11:55.919 -> Octoprint Server: 1.10.3
@@ -334,7 +341,7 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   }
 
   if (blink == 1) {
-    if (bar_max_progress == 3) {bar_max_progress = 4;}
+    if (bar_max_progress == 3) { bar_max_progress = 4; }
     matrix.drawRect(bar_max_progress - 1, 13, 1, 4, matrix.color565(0, 0, 0));  // black
   }
 
