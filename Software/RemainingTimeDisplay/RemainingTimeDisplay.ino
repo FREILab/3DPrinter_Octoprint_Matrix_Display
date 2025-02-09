@@ -13,6 +13,8 @@
 #include "secret.h"
 #include <OctoPrintAPI.h>          // For connection to OctoPrint
 #include <Adafruit_Protomatter.h>  // For RGB matrix
+#include <esp_task_wdt.h>          // For watchdog timer
+
 
 #define HEIGHT 32   // Matrix height (pixels) - SET TO 64 FOR 64x64 MATRIX!
 #define WIDTH 64    // Matrix width (pixels)
@@ -57,6 +59,20 @@ OctoprintApi api(client, ip, octoprint_httpPort, octoprint_apikey);
 const int tempGood_T0 = 50; // below this temperature T0 is considered cool
 const int tempGood_T1 = 50; // below this temperature T1 is considered cool
 
+// Watchdog timeout (3 seconds)
+/* info on core mask:
+  .idle_core_mask = (1 << portNUM_PROCESSORS) - 1
+  ESP32 has two cores -> 0001
+  shift two times to the left -> 0100
+  subtract one -> 0011
+*/
+esp_task_wdt_config_t twdt_config
+{
+  timeout_ms:     3000U,
+  idle_core_mask: 0b011,
+  trigger_panic:  true
+};
+
 void setup() {
   // Start Serial Interface
   Serial.begin(115200);
@@ -72,6 +88,10 @@ void setup() {
 
   // connect to WiFi
   connectToWiFi();
+
+  // Initialize the watchdog timer
+  esp_task_wdt_init(&twdt_config); // Enable panic reset
+  esp_task_wdt_add(NULL); // Add current task to watchdog
 }
 
 void loop() {
@@ -119,6 +139,8 @@ void loop() {
       }
     }
   }
+  // Feed the watchdog to prevent a reset
+  esp_task_wdt_reset();
 }
 
 void connectToWiFi() {
