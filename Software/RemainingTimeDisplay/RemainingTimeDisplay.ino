@@ -68,7 +68,7 @@ const int tempGood_T1 = 50; // below this temperature T1 is considered cool
 */
 esp_task_wdt_config_t twdt_config
 {
-  timeout_ms:     3000U,
+  timeout_ms:     2000U,
   idle_core_mask: 0b011,
   trigger_panic:  true
 };
@@ -76,7 +76,7 @@ esp_task_wdt_config_t twdt_config
 void setup() {
   // Start Serial Interface
   Serial.begin(115200);
-  delay(2000);
+  delay(500);
 
   // Start LED Matrix
   ProtomatterStatus status = matrix.begin();
