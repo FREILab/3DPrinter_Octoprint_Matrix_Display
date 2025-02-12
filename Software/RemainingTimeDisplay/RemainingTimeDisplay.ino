@@ -208,7 +208,7 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   // draw border
   matrix.drawRect(0, 0, 64, 32, matrix.color565(0, 255, 0));  // green
 
-  // Text time (always)
+  // Text "Time" (always)
   sprintf(str, "Time");
   textX = 2;
   textY = 3;
@@ -294,15 +294,14 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   // Line separating Progress and Temperatures
   matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255));  // white
 
-  // Display Extruder Temperature Text
-  textX = 2;
-  textY = 23;
-  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
-  matrix.setCursor(textX, textY);
-  matrix.println("T:");
-
   // Display T0
-  textX = 15;
+  if(temp_T0 < 10) {
+    textX = 16;
+  } else if (temp_T0 < 100) {
+    textX = 10;
+  } else if (temp_T0 >= 100) {
+    textX = 4;
+  }
   textY = 23;
   if (temp_T0 >= tempGood_T0) {
     // hot
@@ -314,15 +313,29 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
 
-  // Display Dash
-  textX = 34;
+  // display "C" of "°C"
+  textX = 26;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
+  matrix.setCursor(textX, textY);
+  matrix.println("C");
+
+  // display "°" of "°C"
+  matrix.drawCircle(textX-2, textY, 1, matrix.color565(255, 255, 255)); // white
+
+  // Display Slash
+  textX = 33;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("|");
 
   // Display T1
-  textX = 40;
+  if(temp_T1 < 10) {
+    textX = 46;
+  } else if (temp_T1 >= 10) {
+    textX = 40;
+  }
   textY = 23;
   if (temp_T1 >= tempGood_T1) {
     // hot
@@ -333,6 +346,16 @@ void displayPrinterPrinting(int seconds, float progress, int temp_T0, int temp_T
   }
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
+
+  // display "C" of "°C"
+  textX = 56;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
+  matrix.setCursor(textX, textY);
+  matrix.println("C");
+
+  // display "°" of "°C"
+  matrix.drawCircle(textX-2, textY, 1, matrix.color565(255, 255, 255)); // white
 
   // Update Display
   matrix.show();
@@ -348,7 +371,7 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   // draw border
   matrix.drawRect(0, 0, 64, 32, matrix.color565(255, 255, 0));  // yellow
 
-  // Text time (always)
+  // Text "Ready" (always)
   sprintf(str, "Ready");
   textX = 2;
   textY = 3;
@@ -362,15 +385,14 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   // Line separating Progress and Temperatures
   matrix.drawRect(1, 20, 62, 1, matrix.color565(255, 255, 255));  // white
 
-  // Display Extruder Temperature Text
-  textX = 2;
-  textY = 23;
-  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
-  matrix.setCursor(textX, textY);
-  matrix.println("T:");
-
   // Display T0
-  textX = 15;
+  if(temp_T0 < 10) {
+    textX = 16;
+  } else if (temp_T0 < 100) {
+    textX = 10;
+  } else if (temp_T0 >= 100) {
+    textX = 4;
+  }
   textY = 23;
   if (temp_T0 >= tempGood_T0) {
     // hot
@@ -382,15 +404,29 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   matrix.setCursor(textX, textY);
   matrix.println(temp_T0);
 
+  // display "C" of "°C"
+  textX = 26;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
+  matrix.setCursor(textX, textY);
+  matrix.println("C");
+
+  // display "°" of "°C"
+  matrix.drawCircle(textX-2, textY, 1, matrix.color565(255, 255, 255)); // white
+
   // Display Slash
-  textX = 34;
+  textX = 33;
   textY = 23;
   matrix.setTextColor(matrix.color565(255, 255, 255));  // white
   matrix.setCursor(textX, textY);
   matrix.println("|");
 
   // Display T1
-  textX = 40;
+  if(temp_T1 < 10) {
+    textX = 46;
+  } else if (temp_T1 >= 10) {
+    textX = 40;
+  }
   textY = 23;
   if (temp_T1 >= tempGood_T1) {
     // hot
@@ -401,6 +437,16 @@ void displayPrinterReady(int temp_T0, int temp_T1) {
   }
   matrix.setCursor(textX, textY);
   matrix.println(temp_T1);
+
+  // display "C" of "°C"
+  textX = 56;
+  textY = 23;
+  matrix.setTextColor(matrix.color565(255, 255, 255));  // white
+  matrix.setCursor(textX, textY);
+  matrix.println("C");
+
+  // display "°" of "°C"
+  matrix.drawCircle(textX-2, textY, 1, matrix.color565(255, 255, 255)); // white
 
   // Update Display
   matrix.show();
