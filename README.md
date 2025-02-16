@@ -1,6 +1,6 @@
 # Matrix Display for reminaing print time (Octoprint)
 
-This is a hardware / software project to display the remianing print time for the FreiLab printers
+This is a hardware / software project to display the remianing print time for the FREILab printers
 
 ![Closup of display](Hardware/images/closeup.JPG?raw=true "Closeup")
 
