@@ -1,11 +1,15 @@
-/*******************************************************************
- *  A sketch to display to read out the state of a Octoprint       *
- *  instance and display it onto a matrix LED display.             *
- *                                                                 *
- *  Necessary acces data has to be provided to the secret.h        *
- *  02/2025                                                        *
- *  By Marius Tetard for FREILab Freiburg e.V. https://freilab.de  *
-*******************************************************************/
+/**********************************************************************
+ *  A sketch to display to read out the state of a Octoprint          *
+ *  instance and display it onto a matrix LED display.                *
+ *                                                                    *
+ *  Necessary acces data has to be provided to the secret.h           *
+ *  02/2025                                                           *
+ *  By Marius Tetard for FREILab Freiburg e.V. https://freilab.de     *
+ *                                                                    *
+ *  This software is open source and licensed under the MIT License.  *
+ *  See the LICENSE file or visit https://opensource.org/licenses/MIT *
+ *  for more details.                                                 *
+**********************************************************************/
 
 
 #include <WiFi.h>
