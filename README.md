@@ -14,6 +14,8 @@ The following hardware is used:
 - Power Supply: a USB-C interface capable of 5V, 1.5A is sufficient, for example a raspberry pi USB output port. In normal mode I measured at 5V about 0.15A draw for the display and MCU.
 - Wire it according to the adafruit design guide: https://learn.adafruit.com/32x16-32x32-rgb-led-matrix/overview
 - A 3D printed overhead mount was used to mount the Display and the MCU board.
+- The Display is fixed with 5 M3x12/M3x16 screws
+- For the board four M2 heat inserts and four M2 screws are required
 
 ## Software
 The display uses these significant libraries:
