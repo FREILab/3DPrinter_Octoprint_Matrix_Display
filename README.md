@@ -19,5 +19,6 @@ The following hardware is used:
 The display uses these significant libraries:
 - Adafruit Protomatter (Display driver): https://github.com/adafruit/Adafruit_Protomatter
 - OctoPrintAPI to fetch the print progress: https://github.com/chunkysteveo/OctoPrintAPI
+- enter the WiFi credentials and Octorint IP, Port and API key in the file "secret.h"
 
 The were some issues with the Octoprint API which locked up the MCU when a print job was started/finished. Instead of fixing the API itself, a simple watchdog was implemented to restart the Adafruit MatrixPortal S3 when the software freezes.
